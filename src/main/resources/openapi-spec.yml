@@ -1,0 +1,191 @@
+openapi: 3.0.0
+
+info:
+  title: User Service
+  description: A service for creating, retrieving, updating, and deleting users.
+  version: "1.0"
+
+paths:
+  /v1/users:
+    post:
+      operationId: create
+      summary: Creates a new user.
+      parameters:
+        - name: target
+          in: query
+          required: false
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/User'
+      responses:
+        201:
+          description: The user was created successfully.
+        400:
+          $ref: '#/components/responses/Error'
+  /v1/users/{email}:
+    get:
+      operationId: retrieve
+      summary: Retrieve an existing user.
+      parameters:
+        - name: email
+          in: path
+          description: User email.
+          required: true
+          schema:
+            type: string
+            format: email
+        - name: target
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          $ref: '#/components/responses/User'
+        400:
+          $ref: '#/components/responses/Error'
+        404:
+          $ref: '#/components/responses/Error'
+    put:
+      operationId: update
+      summary: Update an existing user.
+      parameters:
+        - name: email
+          in: path
+          description: User email.
+          required: true
+          schema:
+            type: string
+            format: email
+        - name: target
+          in: query
+          required: false
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/User'
+      responses:
+        204:
+          description: The user was updated successfully.
+        400:
+          $ref: '#/components/responses/Error'
+        404:
+          $ref: '#/components/responses/Error'
+    delete:
+      operationId: delete
+      summary: Delete an existing user.
+      parameters:
+        - name: email
+          in: path
+          description: User email.
+          required: true
+          schema:
+            type: string
+            format: email
+        - name: target
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        204:
+          description: The user was deleted successfully.
+        400:
+          $ref: '#/components/responses/Error'
+  /soap/v1/users:
+    post:
+      summary: A SOAP service for managing users.
+      parameters:
+        - name: target
+          in: query
+          required: false
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/SOAP'
+      responses:
+        200:
+          $ref: '#/components/responses/SOAP'
+    get:
+      summary: The SOAP WSDL.
+      parameters:
+        - name: wsdl
+          in: query
+          allowEmptyValue: true
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          $ref: '#/components/responses/SOAP'
+
+components:
+  requestBodies:
+    User:
+      description: A user request.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+    SOAP:
+      description: A SOAP request.
+      required: true
+      content:
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/AnyValue'
+
+  responses:
+    User:
+      description: A user response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+    Error:
+      description: An unexpected error occurred.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    SOAP:
+      description: A SOAP response.
+      content:
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/AnyValue'
+
+  schemas:
+    User:
+      description: A user.
+      type: object
+      properties:
+        email:
+          description: The email of the user.
+          type: string
+        password:
+          description: The password of the user.
+          type: string
+        firstName:
+          description: The users first name.
+          type: string
+        lastName:
+          description: The users last name.
+          type: string
+      required:
+        - email
+        - password
+    Error:
+      description: An error.
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+    AnyValue: { }
