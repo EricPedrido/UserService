@@ -42,8 +42,6 @@ public class V1ApiDelegateImpl implements V1ApiDelegate {
     @Override
     public ResponseEntity<User> retrieve(String email, String target) {
         if (email == null || email.isEmpty()) {
-
-
             return ResponseEntity.badRequest().build();
         }
 
@@ -56,7 +54,7 @@ public class V1ApiDelegateImpl implements V1ApiDelegate {
 
     @Override
     public ResponseEntity<Void> update(String email, User user, String target) {
-        if (email == null || email.isEmpty()) {
+        if (user == null || email == null || email.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         if (userService.getUserById(email) == null) {
